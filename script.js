@@ -50,18 +50,20 @@ window.onload = () => {
 }
 
 const draw = () => {
+    context.scale(2, 2);
     context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, canvas.clientWidth, canvas.clientHeight);
+    context.scale(1/2, 1/2);
 
     context.fillStyle = 'rgba(255, 0, 0, 255)';
     dots.forEach(dot => {
-        context.fillRect(dot.x, dot.y, 1, 1);
+        context.fillRect(dot.x * 2, dot.y * 2, 1, 1);
     });
 }
 
 const mini_draw = () => {
     mini_context.clearRect(0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
-    mini_context.scale(scale, scale)
+    mini_context.scale(scale, scale);
     mini_context.drawImage(img, window_origin.x - origin.x, window_origin.y - origin.y, mini_canvas.clientWidth, mini_canvas.clientHeight, 0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
     mini_context.scale(1/scale, 1/scale);
 
@@ -247,7 +249,7 @@ const watch_keys = () => {
 
 const print_img = () => {
     let a = document.createElement('a');
-	a.href = canvas.toDataURL('image/jpeg', 0.85);
+	a.href = canvas.toDataURL('image/jpeg', 1.0);
 	a.download = 'zoomclick.jpg';
 	a.click();
 }

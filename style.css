@@ -11,6 +11,8 @@
 }
 
 #canvas{
+  width: 960px;
+  height: 640px;
   margin-left: calc((100% - 900px) / 2);
 }
 
