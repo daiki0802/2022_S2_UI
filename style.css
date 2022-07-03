@@ -1,4 +1,5 @@
 #container{
+  position: relative;
   width: 97.5vw;
   margin: 0 auto;
   font-family: "Noto Sans JP", sans-serif;
@@ -6,13 +7,14 @@
 
 #canvas_wrapper{
   position: relative;
-  width: 100%;
+  width: 960px;
+  height: 640px;
   margin: 0 auto;
 }
 
 #canvas{
-  width: 960px;
-  height: 640px;
+  width: 100%;
+  height: 100%;
   margin-left: calc((100% - 900px) / 2);
 }
 
@@ -21,8 +23,6 @@
   position: absolute;
   width: 450px;
   height: 300px;
-  /* top: calc((100% - 300px) / 2);
-  left: calc((100% - 450px) / 2); */
   border: dashed 3px black;
   z-index: 100;
 

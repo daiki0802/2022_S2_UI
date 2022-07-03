@@ -50,14 +50,14 @@ window.onload = () => {
 }
 
 const draw = () => {
-    context.scale(2, 2);
+    context.scale(base_scale, base_scale);
     context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, canvas.clientWidth, canvas.clientHeight);
-    context.scale(1/2, 1/2);
+    context.scale(1/base_scale, 1/base_scale);
 
     context.fillStyle = 'rgba(255, 0, 0, 255)';
     dots.forEach(dot => {
-        context.fillRect(dot.x * 2, dot.y * 2, 1, 1);
+        context.fillRect(dot.x * base_scale, dot.y * base_scale, 1, 1);
     });
 }
 
@@ -78,9 +78,6 @@ const mini_draw = () => {
 
 
 const open_window = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
     let clickX = e.pageX;
     let clickY = e.pageY;
 
@@ -92,9 +89,16 @@ const open_window = (e) => {
     window_origin.y = Math.trunc(clickY - positionY) * base_scale - SOURCE_HEIGHT / 2;
     
 
-    mini_window.style.top = (clickY - positionY) + "px";
-    mini_window.style.left = (clickX - positionX) + "px";
-    // [todo] 画面外に出ないように
+    mini_window.style.left = (clickX - positionX) - mini_canvas.width / 3 + "px";
+    mini_window.style.top = (clickY - positionY) - mini_canvas.height / 2 + "px";
+    console.log(clickY - positionY);
+    if(clickY - positionY < mini_canvas.height / 2){ // 上端
+        mini_window.style.top = (clickY - positionY) - 50 + "px";
+    }else if(clickY - positionY > clientRect.height - mini_canvas.height / 2){ // 下端
+        console.log("hoge");
+        mini_window.style.top = (clickY - positionY) - mini_canvas.height + 50 + "px";
+    }
+    
     mini_window.style.display = "block";
 
     is_open = true;
