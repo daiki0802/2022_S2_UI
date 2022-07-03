@@ -16,6 +16,7 @@ let img = new Image();
 let mini_img = new Image();
 let dots = [];
 let base_scale; // canvasに対するimgの拡大率
+let pin_icon;
 
 // mini-window関連
 let window_origin = {x:0, y:0};
@@ -37,6 +38,9 @@ window.onload = () => {
     mini_context = mini_canvas.getContext("2d");
     
     pin_list = document.getElementById("pin_list");
+    pin_icon = document.createElement("span");
+    pin_icon.classList.add("material-icons");
+    pin_icon.innerHTML = "location_on";
 
     canvas.addEventListener("click", (e) => toggle_window(e, false));
     canvas.addEventListener("contextmenu", (e) => toggle_window(e, true));
@@ -59,17 +63,22 @@ const draw = () => {
     context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, canvas.clientWidth, canvas.clientHeight);
     context.scale(1/base_scale, 1/base_scale);
 
-    let pin;
+    let pin, pin_idx;
     pin_list.textContent = '';
     context.fillStyle = 'rgba(255, 0, 0, 255)';
     dots.forEach((dot, idx) => {
         context.fillRect(dot.x, dot.y, 1, 1);
 
         pin = document.createElement("div");
-        pin.innerHTML = (idx+1).toString();
         pin.classList.add("pin");
-        pin.style.left = dot.x / base_scale + 22 + "px"; // todo: なぜこの数字で良いのか...?
-        pin.style.top = dot.y / base_scale - 50 + "px";
+        pin.style.left = dot.x / base_scale + 18 + "px"; // todo: なぜこの数字で良いのか...?
+        pin.style.top = dot.y / base_scale - 48 + "px";
+
+        pin_idx = document.createElement("span");
+        pin_idx.innerHTML = (idx+1).toString();
+        pin.appendChild(pin_idx);
+        pin.appendChild(pin_icon.cloneNode(true));
+
         pin_list.appendChild(pin);
     });
 }

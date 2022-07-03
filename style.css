@@ -41,38 +41,18 @@
   top: 0;
   left: 0;
 }
-/* https://design-library.jp/lab/icons-pin-fill */
 #pin_list .pin{
   display: inline-block;
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   font-size: 16px;
   text-align: center;
   color: red;
 }
-#pin_list .pin::before{
-  content: "";
-  position: absolute;
-  vertical-align: middle;
-  top: 24px;
-  left: -5%;
-  width: 100%;
-  height: 100%;
-  background: red;
-  border: 1px solid red;
-  border-radius: 40% 60% 0% 100% / 40% 100% 0% 60%;
-  box-sizing: content-box;
-  transform: rotate(45deg);
-}
-#pin_list .pin::after{
-  content: "";
-  position: absolute;
-  top: calc(24px + 25%);
-  left: 25%;
-  width: 50%;
-  height: 50%;
-  background: #fff;
-  border-radius: 50%;
-  box-sizing: border-box;
+#pin_list .pin span{ font-size: 14px; }
+#pin_list .pin .material-icons{
+  display: inline-block;
+  color: red;
+  font-size: 24px;
 }
