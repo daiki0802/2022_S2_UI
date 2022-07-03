@@ -17,7 +17,7 @@ let base_scale; // canvasに対するimgの拡大率
 
 // mini-window関連
 let window_origin = {x:0, y:0};
-let local_dot = null;
+let new_dot = null;
 let diff = {x:0, y:0}; // 動いたことによるずれ
 let scale = 6; // 拡大率
 let move_flg = {up:false, left:false, down:false, right:false};
@@ -57,14 +57,16 @@ const draw = () => {
     context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, canvas.clientWidth, canvas.clientHeight);
     context.scale(1/base_scale, 1/base_scale);
 
+    let pin;
+    pin_list.textContent = '';
     context.fillStyle = 'rgba(255, 0, 0, 255)';
     dots.forEach(dot => {
-        context.fillRect(dot.x * base_scale, dot.y * base_scale, 1, 1);
+        context.fillRect(dot.x, dot.y, 1, 1);
 
-        let pin = document.createElement("div");
+        pin = document.createElement("div");
         pin.classList.add("pin");
-        pin.style.left = dot.x + 20.5 + "px"; // todo: なぜこの数字で良いのか...?
-        pin.style.top = dot.y - 25 + "px";
+        pin.style.left = dot.x / base_scale + 20.5 + "px"; // todo: なぜこの数字で良いのか...?
+        pin.style.top = dot.y / base_scale - 25 + "px";
         pin_list.appendChild(pin);
     });
 }
@@ -76,13 +78,17 @@ const mini_draw = () => {
     mini_context.drawImage(img, window_origin.x - diff.x, window_origin.y - diff.y, mini_canvas.clientWidth, mini_canvas.clientHeight, 0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
     mini_context.scale(1/scale, 1/scale);
 
-    mini_context.fillStyle = 'rgba(255, 0, 0, 255)';
-    if(local_dot != null){
-        mini_context.fillRect(scale * (diff.x + local_dot.x), scale * (diff.y + local_dot.y), scale, scale);
+    // 新規選択のドットは青
+    mini_context.fillStyle = 'rgba(0, 0, 255, 255)';
+    if(new_dot != null){
+        mini_context.fillRect(scale * (diff.x + new_dot.x), scale * (diff.y + new_dot.y), scale, scale);
     }
-    // dots_local.forEach(dot => {
-    //     mini_context.fillRect(scale * (diff.x + dot.x), scale * (diff.y + dot.y), scale, scale);
-    // });
+
+    // 既に選ばれていたドットは赤
+    mini_context.fillStyle = 'rgba(255, 0, 0, 255)';
+    dots.forEach(dot => {
+        mini_context.fillRect(scale * (diff.x + dot.x - window_origin.x), scale * (diff.y + dot.y - window_origin.y), scale, scale);
+    });
 }
 
 // mini-windowの開閉切り替え
@@ -93,12 +99,12 @@ const toggle_window = (e, flg) => {
     mini_window.style.display = "none";
     is_open = false;
 
-    // store local_dot (if any)
-    if(local_dot != null){
-        console.log(window_origin, diff, local_dot);
+    // store new_dot (if any)
+    if(new_dot != null){
+        console.log(window_origin, diff, new_dot);
         dots.push({
-            x: (window_origin.x + local_dot.x) / base_scale,
-            y: (window_origin.y + local_dot.y) / base_scale
+            x: window_origin.x + new_dot.x,
+            y: window_origin.y + new_dot.y
         });
     }
     draw();
@@ -107,7 +113,7 @@ const toggle_window = (e, flg) => {
     mini_context.clearRect(0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
     diff = {x:0, y:0};
     scale = 6;
-    local_dot = null;
+    new_dot = null;
     clearInterval(watch_keys);
 
     // flgが経っている場合のみ次のwindowを開く
@@ -158,26 +164,23 @@ const mini_select_point = (e) => {
     
     console.log(xx, yy);
 
-    if(local_dot != null && ((local_dot.x-xx)*(local_dot.x-xx) + (local_dot.y-yy)*(local_dot.y-yy)) < 1){
-        local_dot = null;
+    if(new_dot != null && ((new_dot.x-xx)*(new_dot.x-xx) + (new_dot.y-yy)*(new_dot.y-yy)) < 1){ // 新規ドットが再び選ばれて消される場合
+        new_dot = null;
     }else{
-        local_dot = {x:xx, y:yy};
-    }
-    // let picked_dot = null;
-    // dots_local.forEach(dot => {
-    //     if(((dot.x-xx)*(dot.x-xx) + (dot.y-yy)*(dot.y-yy)) < 1){
-    //         picked_dot = dot;
-    //         console.log("picked");
-    //     }
-    // });
+        let picked_dot = null;
+        dots.forEach(dot => {
+            if(((dot.x-window_origin.x-xx)*(dot.x-window_origin.x-xx) + (dot.y-window_origin.y-yy)*(dot.y-window_origin.y-yy)) < 1){
+                picked_dot = dot;
+                console.log("picked");
+            }
+        });
 
-    // if(picked_dot != null){
-    //     dots_local = dots_local.filter((d) => {
-    //         return (d != picked_dot);
-    //     });
-    // }else{
-    //     dots_local.push({x:xx, y:yy});
-    // }
+        if(picked_dot != null){ // 旧ドットが選ばれて消される場合
+            dots = dots.filter(d => d != picked_dot);
+        }else{ // 新しいドットが選ばれる場合
+            new_dot = {x:xx, y:yy};
+        }
+    }
 
     mini_draw();
 }
