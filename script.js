@@ -209,13 +209,16 @@ document.addEventListener("keydown", (e) => {
             move_flg.right = true;
             return;
         case "e":
-            e.preventDefault();
-            e.ctrlKey ? zoom_flg.out = true : zoom_flg.in = true;
+            zoom_flg.in = true;
             return;
-        case "c":
+        case "q":
+            zoom_flg.out = true;
             return;
         case "Escape":
             toggle_window(e, false);
+            return;
+        case "p":
+            print_img();
             return;
         default: return;
     }
@@ -242,9 +245,6 @@ document.addEventListener("keyup", (e) => {
             zoom_flg.in = false;
             zoom_flg.out = false;
             return;
-        case "p":
-            print_img();
-            return;
         default: return;
     }
 });
@@ -258,11 +258,9 @@ const watch_keys = () => {
     if(move_flg.right) diff.x = (diff.x <= -MAX_MOVE) ? -MAX_MOVE : diff.x - MOVE_STEP;
 
     // zoom
-    if(zoom_flg.in){
-        scale = (scale >= MAX_SCALE) ? MAX_SCALE : scale + SCALE_STEP;
-    }else if(zoom_flg.out){
-        scale = (scale <= MIN_SCALE) ? MIN_SCALE : scale - SCALE_STEP;
-    }
+    if(zoom_flg.in) scale = (scale >= MAX_SCALE) ? MAX_SCALE : scale + SCALE_STEP;
+    if(zoom_flg.out) scale = (scale <= MIN_SCALE) ? MIN_SCALE : scale - SCALE_STEP;
+    
     mini_draw();
 }
 
