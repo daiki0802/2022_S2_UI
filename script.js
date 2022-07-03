@@ -3,9 +3,11 @@
 const SOURCE_WIDTH = 90;
 const SOURCE_HEIGHT = 60;
 // 移動
+const MAX_MOVE = 20;
 const MOVE_STEP = 1;
 // 拡大
 const MAX_SCALE = 8;
+const MIN_SCALE = 4;
 const SCALE_STEP = 0.1;
 
 /* グローバル変数 */
@@ -109,11 +111,13 @@ const toggle_window = (e, flg) => {
     }
     draw();
 
-    // initialize
-    mini_context.clearRect(0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
+    // パラメータの初期化
+    window_origin = {x:0, y:0};
+    new_dot = null;
     diff = {x:0, y:0};
     scale = 6;
-    new_dot = null;
+    move_flg = {up:false, left:false, down:false, right:false};
+    zoom_flg = {in:false, out:false};
     clearInterval(watch_keys);
 
     // flgが経っている場合のみ次のwindowを開く
@@ -144,8 +148,8 @@ const open_window = (e) => {
     }
     
     mini_window.style.display = "block";
-
     is_open = true;
+    
     mini_draw();
     setInterval(watch_keys, 20);
 }
@@ -248,18 +252,16 @@ document.addEventListener("keyup", (e) => {
 // キーボード操作で変わったフラグに応じて描画
 const watch_keys = () => {
     // move
-    if(move_flg.up) diff.y += MOVE_STEP;
-    if(move_flg.left) diff.x += MOVE_STEP;
-    if(move_flg.down) diff.y -= MOVE_STEP;
-    if(move_flg.right) diff.x -= MOVE_STEP;
+    if(move_flg.up) diff.y = (diff.y >= MAX_MOVE) ? MAX_MOVE : diff.y + MOVE_STEP;
+    if(move_flg.left) diff.x = (diff.x >= MAX_MOVE) ? MAX_MOVE : diff.x + MOVE_STEP;
+    if(move_flg.down) diff.y = (diff.y <= -MAX_MOVE) ? -MAX_MOVE : diff.y - MOVE_STEP;
+    if(move_flg.right) diff.x = (diff.x <= -MAX_MOVE) ? -MAX_MOVE : diff.x - MOVE_STEP;
 
     // zoom
     if(zoom_flg.in){
-        scale += SCALE_STEP;
-        if(scale > MAX_SCALE) scale = MAX_SCALE;
+        scale = (scale >= MAX_SCALE) ? MAX_SCALE : scale + SCALE_STEP;
     }else if(zoom_flg.out){
-        scale -= SCALE_STEP;
-        if(scale <= 1) scale = 1;
+        scale = (scale <= MIN_SCALE) ? MIN_SCALE : scale - SCALE_STEP;
     }
     mini_draw();
 }
