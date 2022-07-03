@@ -1,22 +1,3 @@
-let dragging = false;
-
-// https://kuroeveryday.blogspot.com/2017/09/zoom-in-out-and-drag-to-move-on-canvas.html
-
-
-
-
-let canvas, context, mini_window, mini_canvas, mini_context, pin_list;
-let img = new Image();
-let mini_img = new Image();
-let origin = {x:0, y:0}; // 描画の原点
-let scale = 6; // 拡大率
-let base_scale; // canvasに対するimgの拡大率
-let is_open = false;
-
-let window_origin = {x:0, y:0};
-let local_dot = null;
-let dots = [];
-
 /* パラメータ */
 // 画像から切り取る範囲
 const SOURCE_WIDTH = 90;
@@ -27,7 +8,25 @@ const MOVE_STEP = 1;
 const MAX_SCALE = 8;
 const SCALE_STEP = 0.1;
 
+/* グローバル変数 */
+let canvas, context, mini_window, mini_canvas, mini_context, pin_list;
+let img = new Image();
+let mini_img = new Image();
+let dots = [];
+let base_scale; // canvasに対するimgの拡大率
+
+// mini-window関連
+let window_origin = {x:0, y:0};
+let local_dot = null;
+let diff = {x:0, y:0}; // 動いたことによるずれ
+let scale = 6; // 拡大率
+let move_flg = {up:false, left:false, down:false, right:false};
+let zoom_flg = {in:false, out:false};
+let is_open = false;
+
+
 window.onload = () => {
+    document.onselectstart = () => false; // 選択を無効化
 
     canvas = document.getElementById("canvas");
     context = canvas.getContext("2d");
@@ -51,6 +50,7 @@ window.onload = () => {
     }
 }
 
+// canvasの描画
 const draw = () => {
     context.scale(base_scale, base_scale);
     context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -69,22 +69,52 @@ const draw = () => {
     });
 }
 
+// mini-windowの描画
 const mini_draw = () => {
     mini_context.clearRect(0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
     mini_context.scale(scale, scale);
-    mini_context.drawImage(img, window_origin.x - origin.x, window_origin.y - origin.y, mini_canvas.clientWidth, mini_canvas.clientHeight, 0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
+    mini_context.drawImage(img, window_origin.x - diff.x, window_origin.y - diff.y, mini_canvas.clientWidth, mini_canvas.clientHeight, 0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
     mini_context.scale(1/scale, 1/scale);
 
     mini_context.fillStyle = 'rgba(255, 0, 0, 255)';
     if(local_dot != null){
-        mini_context.fillRect(scale * (origin.x + local_dot.x), scale * (origin.y + local_dot.y), scale, scale);
+        mini_context.fillRect(scale * (diff.x + local_dot.x), scale * (diff.y + local_dot.y), scale, scale);
     }
     // dots_local.forEach(dot => {
-    //     mini_context.fillRect(scale * (origin.x + dot.x), scale * (origin.y + dot.y), scale, scale);
+    //     mini_context.fillRect(scale * (diff.x + dot.x), scale * (diff.y + dot.y), scale, scale);
     // });
 }
 
+// mini-windowの開閉切り替え
+const toggle_window = (e, flg) => {
+    e.preventDefault();
+    e.stopPropagation();
 
+    mini_window.style.display = "none";
+    is_open = false;
+
+    // store local_dot (if any)
+    if(local_dot != null){
+        console.log(window_origin, diff, local_dot);
+        dots.push({
+            x: (window_origin.x + local_dot.x) / base_scale,
+            y: (window_origin.y + local_dot.y) / base_scale
+        });
+    }
+    draw();
+
+    // initialize
+    mini_context.clearRect(0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
+    diff = {x:0, y:0};
+    scale = 6;
+    local_dot = null;
+    clearInterval(watch_keys);
+
+    // flgが経っている場合のみ次のwindowを開く
+    if(flg) open_window(e);
+}
+
+// mini-windowを開く
 const open_window = (e) => {
     let clickX = e.pageX;
     let clickY = e.pageY;
@@ -114,33 +144,7 @@ const open_window = (e) => {
     setInterval(watch_keys, 20);
 }
 
-const toggle_window = (e, flg) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    mini_window.style.display = "none";
-    is_open = false;
-
-    // store local_dot (if any)
-    if(local_dot != null){
-        console.log(window_origin, origin, local_dot);
-        dots.push({
-            x: (window_origin.x + local_dot.x) / base_scale,
-            y: (window_origin.y + local_dot.y) / base_scale
-        });
-    }
-    draw();
-
-    // initialize
-    mini_context.clearRect(0, 0, mini_canvas.clientWidth, mini_canvas.clientHeight);
-    origin = {x:0, y:0};
-    scale = 6;
-    local_dot = null;
-    clearInterval(watch_keys);
-
-    if(flg) open_window(e);
-}
-
+// 点を選ぶ
 const mini_select_point = (e) => {
     let clickX = e.pageX;
     let clickY = e.pageY;
@@ -149,8 +153,8 @@ const mini_select_point = (e) => {
     let positionX = clientRect.left + window.pageXOffset;
     let positionY = clientRect.top + window.pageYOffset;
 
-    let xx = Math.trunc((clickX - positionX) / scale - origin.x);
-    let yy = Math.trunc((clickY - positionY) / scale - origin.y);
+    let xx = Math.trunc((clickX - positionX) / scale - diff.x);
+    let yy = Math.trunc((clickY - positionY) / scale - diff.y);
     
     console.log(xx, yy);
 
@@ -178,8 +182,7 @@ const mini_select_point = (e) => {
     mini_draw();
 }
 
-let move_flg = {up:false, left:false, down:false, right:false};
-let zoom_flg = {in:false, out:false};
+// キー操作の設定
 document.addEventListener("keydown", (e) => {
     switch(e.key){
         case "ArrowUp":
@@ -210,8 +213,6 @@ document.addEventListener("keydown", (e) => {
         default: return;
     }
 });
-
-
 document.addEventListener("keyup", (e) => {
     switch(e.key){
         case "ArrowUp":
@@ -241,12 +242,13 @@ document.addEventListener("keyup", (e) => {
     }
 });
 
+// キーボード操作で変わったフラグに応じて描画
 const watch_keys = () => {
     // move
-    if(move_flg.up) origin.y += MOVE_STEP;
-    if(move_flg.left) origin.x += MOVE_STEP;
-    if(move_flg.down) origin.y -= MOVE_STEP;
-    if(move_flg.right) origin.x -= MOVE_STEP;
+    if(move_flg.up) diff.y += MOVE_STEP;
+    if(move_flg.left) diff.x += MOVE_STEP;
+    if(move_flg.down) diff.y -= MOVE_STEP;
+    if(move_flg.right) diff.x -= MOVE_STEP;
 
     // zoom
     if(zoom_flg.in){
@@ -259,11 +261,10 @@ const watch_keys = () => {
     mini_draw();
 }
 
+// 画像を出力
 const print_img = () => {
     let a = document.createElement('a');
 	a.href = canvas.toDataURL('image/jpeg', 1.0);
 	a.download = 'zoomclick.jpg';
 	a.click();
 }
-
-document.onselectstart = () => false;
