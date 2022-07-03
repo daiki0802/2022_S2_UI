@@ -5,7 +5,7 @@ let dragging = false;
 
 
 
-let canvas, context, mini_window, mini_canvas, mini_context;
+let canvas, context, mini_window, mini_canvas, mini_context, pin_list;
 let img = new Image();
 let mini_img = new Image();
 let origin = {x:0, y:0}; // 描画の原点
@@ -34,6 +34,8 @@ window.onload = () => {
     mini_window = document.getElementById("mini-window");
     mini_canvas = document.getElementById("mini-canvas");
     mini_context = mini_canvas.getContext("2d");
+    
+    pin_list = document.getElementById("pin_list");
 
     canvas.addEventListener("click", (e) => toggle_window(e, false));
     canvas.addEventListener("contextmenu", (e) => toggle_window(e, true));
@@ -58,6 +60,12 @@ const draw = () => {
     context.fillStyle = 'rgba(255, 0, 0, 255)';
     dots.forEach(dot => {
         context.fillRect(dot.x * base_scale, dot.y * base_scale, 1, 1);
+
+        let pin = document.createElement("div");
+        pin.classList.add("pin");
+        pin.style.left = dot.x + 20.5 + "px"; // todo: なぜこの数字で良いのか...?
+        pin.style.top = dot.y - 25 + "px";
+        pin_list.appendChild(pin);
     });
 }
 
