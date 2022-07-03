@@ -51,7 +51,6 @@ window.onload = () => {
     img.src = "image.jpg";
     img.onload = () => {
         base_scale = img.naturalWidth / canvas.clientWidth;
-        console.log(canvas.width, canvas.height, base_scale);
         draw();
     }
 }
@@ -113,7 +112,6 @@ const toggle_window = (e, flg) => {
 
     // store new_dot (if any)
     if(new_dot != null){
-        console.log(window_origin, diff, new_dot);
         dots.push({
             x: window_origin.x + new_dot.x,
             y: window_origin.y + new_dot.y
@@ -149,11 +147,9 @@ const open_window = (e) => {
 
     mini_window.style.left = (clickX - positionX) - mini_canvas.width / 3 + "px";
     mini_window.style.top = (clickY - positionY) - mini_canvas.height / 2 + "px";
-    console.log(clickY - positionY);
     if(clickY - positionY < mini_canvas.height / 2){ // 上端
         mini_window.style.top = (clickY - positionY) - 50 + "px";
     }else if(clickY - positionY > clientRect.height - mini_canvas.height / 2){ // 下端
-        console.log("hoge");
         mini_window.style.top = (clickY - positionY) - mini_canvas.height + 50 + "px";
     }
     
@@ -173,26 +169,23 @@ const mini_select_point = (e) => {
     let positionX = clientRect.left + window.pageXOffset;
     let positionY = clientRect.top + window.pageYOffset;
 
-    let xx = Math.trunc((clickX - positionX) / scale - diff.x);
-    let yy = Math.trunc((clickY - positionY) / scale - diff.y);
-    
-    console.log(xx, yy);
+    let x = Math.trunc((clickX - positionX) / scale - diff.x);
+    let y = Math.trunc((clickY - positionY) / scale - diff.y);
 
-    if(new_dot != null && ((new_dot.x-xx)*(new_dot.x-xx) + (new_dot.y-yy)*(new_dot.y-yy)) < 1){ // 新規ドットが再び選ばれて消される場合
+    if(new_dot != null && (new_dot.x == x && new_dot.y == y)){ // 新規ドットが再び選ばれて消される場合
         new_dot = null;
     }else{
         let picked_dot = null;
         dots.forEach(dot => {
-            if(((dot.x-window_origin.x-xx)*(dot.x-window_origin.x-xx) + (dot.y-window_origin.y-yy)*(dot.y-window_origin.y-yy)) < 1){
+            if(dot.x - window_origin.x == x && dot.y - window_origin.y == y){
                 picked_dot = dot;
-                console.log("picked");
             }
         });
 
         if(picked_dot != null){ // 旧ドットが選ばれて消される場合
             dots = dots.filter(d => d != picked_dot);
         }else{ // 新しいドットが選ばれる場合
-            new_dot = {x:xx, y:yy};
+            new_dot = {x:x, y:y};
         }
     }
 
