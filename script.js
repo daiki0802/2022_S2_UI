@@ -22,10 +22,10 @@ let dots = [];
 const SOURCE_WIDTH = 90;
 const SOURCE_HEIGHT = 60;
 // 移動
-const MOVE_STEP = 0.25;
+const MOVE_STEP = 1;
 // 拡大
-const MAX_SCALE = 5;
-const SCALE_STEP = 0.05;
+const MAX_SCALE = 8;
+const SCALE_STEP = 0.1;
 
 window.onload = () => {
 
@@ -85,8 +85,8 @@ const open_window = (e) => {
     let positionX = clientRect.left + window.pageXOffset;
     let positionY = clientRect.top + window.pageYOffset;
 
-    window_origin.x = Math.trunc(clickX - positionX) * base_scale - SOURCE_WIDTH / 2;
-    window_origin.y = Math.trunc(clickY - positionY) * base_scale - SOURCE_HEIGHT / 2;
+    window_origin.x = Math.trunc(clickX - positionX) * base_scale - SOURCE_WIDTH / 3; // 本当は2だが、なぜか3の方が切り取り位置が良くなるのでこうしている
+    window_origin.y = Math.trunc(clickY - positionY) * base_scale - SOURCE_HEIGHT / 2.5;
     
 
     mini_window.style.left = (clickX - positionX) - mini_canvas.width / 3 + "px";
@@ -257,3 +257,5 @@ const print_img = () => {
 	a.download = 'zoomclick.jpg';
 	a.click();
 }
+
+document.onselectstart = () => false;
