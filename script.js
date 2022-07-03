@@ -62,13 +62,14 @@ const draw = () => {
     let pin;
     pin_list.textContent = '';
     context.fillStyle = 'rgba(255, 0, 0, 255)';
-    dots.forEach(dot => {
+    dots.forEach((dot, idx) => {
         context.fillRect(dot.x, dot.y, 1, 1);
 
         pin = document.createElement("div");
+        pin.innerHTML = (idx+1).toString();
         pin.classList.add("pin");
-        pin.style.left = dot.x / base_scale + 20.5 + "px"; // todo: なぜこの数字で良いのか...?
-        pin.style.top = dot.y / base_scale - 25 + "px";
+        pin.style.left = dot.x / base_scale + 22 + "px"; // todo: なぜこの数字で良いのか...?
+        pin.style.top = dot.y / base_scale - 50 + "px";
         pin_list.appendChild(pin);
     });
 }
@@ -260,7 +261,7 @@ const watch_keys = () => {
     // zoom
     if(zoom_flg.in) scale = (scale >= MAX_SCALE) ? MAX_SCALE : scale + SCALE_STEP;
     if(zoom_flg.out) scale = (scale <= MIN_SCALE) ? MIN_SCALE : scale - SCALE_STEP;
-    
+
     mini_draw();
 }
 
