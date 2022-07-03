@@ -220,6 +220,9 @@ document.addEventListener("keydown", (e) => {
         case "Escape":
             toggle_window(e, false);
             return;
+        case "z":
+            if(e.ctrlKey) redo(e);
+            return;
         case "p":
             print_img();
             return;
@@ -265,6 +268,15 @@ const watch_keys = () => {
     if(zoom_flg.out) scale = (scale <= MIN_SCALE) ? MIN_SCALE : scale - SCALE_STEP;
 
     mini_draw();
+}
+
+// 点を消す
+const redo = (e) => {
+    e.preventDefault();
+    if(dots != []){
+        dots.pop();
+        draw();
+    }
 }
 
 // 画像を出力
