@@ -153,6 +153,7 @@ const control_timer = () => {
     if(timer_flg == 0){
         timer_flg = 1;
         overlay.style.display = "none";
+        timeDisplay.style.display = "block";
 
         timer.start();
         timer.addEventListener("secondsUpdated", () => {
@@ -164,6 +165,7 @@ const control_timer = () => {
 
             timer_flg = 2;
             overlay.style.display = "block";
+            timeDisplay.style.display = "none";
             overlay.innerHTML = "結果: " + timer.getTimeValues().toString(["minutes", "seconds"]);
         }else{
             UIkit.notification({message: "10個の点を選択してください", pos: "top-center", status: "danger"});
