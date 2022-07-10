@@ -160,10 +160,14 @@ const control_timer = () => {
 
         timer_flg = 1;
     }else if(timer_flg == 1){
-        overlay.style.display = "block";
-        timer.pause();
-
-        timer_flg = 2;
+        if(dots.length == 10){
+            overlay.style.display = "block";
+            timer.pause();
+            timer_flg = 2;
+        }else{
+            UIkit.notification({message: "10個の点を選択してください", pos: "top-center", status: "danger"});
+            setTimeout(() => {UIkit.notification.closeAll()}, 1500);
+        }
     }
 }
 
