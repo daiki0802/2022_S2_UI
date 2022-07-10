@@ -70,7 +70,7 @@ const draw = () => {
 
         pin = document.createElement("div");
         pin.classList.add("pin");
-        pin.style.left = dot.x / base_scale + 18 + "px"; // todo: なぜこの数字で良いのか...?
+        pin.style.left = dot.x / base_scale - 15 + "px";
         pin.style.top = dot.y / base_scale - 48 + "px";
 
         pin_idx = document.createElement("span");

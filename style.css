@@ -83,13 +83,11 @@ main{
   position: relative;
   width: 960px;
   height: 640px;
-  /* margin: 0 auto; */
 }
 
 #canvas{
   width: 100%;
   height: 100%;
-  /* margin-left: calc((100% - 900px) / 2); */
 }
 
 #mini-window{
@@ -118,8 +116,8 @@ main{
 #pin_list .pin{
   display: inline-block;
   position: absolute;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 48px;
   font-size: 16px;
   text-align: center;
   color: red;
