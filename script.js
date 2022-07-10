@@ -151,19 +151,20 @@ const watch_keys = () => {
 // タイマー制御
 const control_timer = () => {
     if(timer_flg == 0){
+        timer_flg = 1;
         overlay.style.display = "none";
 
         timer.start();
         timer.addEventListener("secondsUpdated", () => {
             timeDisplay.innerHTML = timer.getTimeValues().toString(["minutes", "seconds"]);
         });
-
-        timer_flg = 1;
     }else if(timer_flg == 1){
         if(dots.length == 10){
-            overlay.style.display = "block";
             timer.pause();
+
             timer_flg = 2;
+            overlay.style.display = "block";
+            overlay.innerHTML = "結果: " + timer.getTimeValues().toString(["minutes", "seconds"]);
         }else{
             UIkit.notification({message: "10個の点を選択してください", pos: "top-center", status: "danger"});
             setTimeout(() => {UIkit.notification.closeAll()}, 1500);
