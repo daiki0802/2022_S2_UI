@@ -66,7 +66,6 @@ window.onload = () => {
 
 /* キー操作の設定 */
 document.addEventListener("keydown", (e) => {
-    console.log(e.key);
     switch(e.key){
         case "Enter":
             control_timer();
@@ -268,12 +267,17 @@ const open_window = (e) => {
     window_origin.y = Math.trunc(clickY - positionY) * base_scale - SOURCE_HEIGHT / 2.5;
     
 
-    mini_window.style.left = (clickX - positionX) - mini_canvas.width / 3 + "px";
+    mini_window.style.left = (clickX - positionX) - mini_canvas.width / 2 + "px";
     mini_window.style.top = (clickY - positionY) - mini_canvas.height / 2 + "px";
     if(clickY - positionY < mini_canvas.height / 2){ // 上端
-        mini_window.style.top = (clickY - positionY) - 50 + "px";
+        mini_window.style.top = (clickY - positionY) - 100 + "px";
     }else if(clickY - positionY > clientRect.height - mini_canvas.height / 2){ // 下端
         mini_window.style.top = (clickY - positionY) - mini_canvas.height + 50 + "px";
+    }
+    if(clickX - positionX < mini_canvas.width / 3){ // 左端
+        mini_window.style.left = (clickX - positionX) - 100 + "px";
+    }else if(clickX - positionX > clientRect.width - mini_canvas.width / 2){ // 右端
+        mini_window.style.left = (clickX - positionX) - mini_canvas.width + 100 + "px";
     }
     
     mini_window.style.display = "block";
