@@ -87,10 +87,10 @@ document.addEventListener("keydown", (e) => {
             move_flg.right = true;
             return;
         case "e":
-            zoom_flg.in = true;
+            zoom_flg.out = true;
             return;
         case "q":
-            zoom_flg.out = true;
+            zoom_flg.in = true;
             return;
         case "Escape":
             toggle_window(e, false);
@@ -122,6 +122,10 @@ document.addEventListener("keyup", (e) => {
         case "ArrowRight":
         case "d":
             move_flg.right = false;
+            return;
+        case "q":
+            zoom_flg.in = false;
+            zoom_flg.out = false;
             return;
         case "e":
             zoom_flg.in = false;
