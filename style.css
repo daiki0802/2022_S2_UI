@@ -1,4 +1,4 @@
-*{
+*:not(.material-icons){
   font-family: "Noto Sans JP", sans-serif !important;
 }
 
@@ -126,6 +126,7 @@ main{
 }
 #pin_list .pin span{ font-size: 14px; }
 #pin_list .pin .material-icons{
+  font-family: 'Material Icons';
   display: inline-block;
   color: red;
   font-size: 24px;
