@@ -125,6 +125,7 @@ main{
   font-size: 16px;
   text-align: center;
   color: red;
+  cursor: default;
 }
 #pin_list .pin span{ font-size: 14px; }
 #pin_list .pin .material-icons{

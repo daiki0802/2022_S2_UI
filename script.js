@@ -194,6 +194,7 @@ const draw = () => {
         pin.classList.add("pin");
         pin.style.left = dot.x / base_scale - 15 + "px";
         pin.style.top = dot.y / base_scale - 48 + "px";
+        pin.addEventListener("contextmenu", (e) => toggle_window(e, true));
 
         pin_idx = document.createElement("span");
         pin_idx.innerHTML = (idx+1).toString();
