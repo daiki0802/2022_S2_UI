@@ -14,6 +14,8 @@ main{
   align-items: center;
 }
 
+
+/* 左のガイド */
 #guide{
   height: 640px;
 }
@@ -61,7 +63,7 @@ main{
 
 #guide #guide-body ol{
   margin: 0;
-  padding-left: 15px;
+  padding-left: 20px;
 }
 
 #guide #guide-body ol li{
@@ -79,6 +81,8 @@ main{
   margin-bottom: 20px;
 }
 
+
+/* キャンバス */
 #canvas_wrapper{
   position: relative;
   width: 960px;
@@ -128,4 +132,21 @@ main{
   display: inline-block;
   color: red;
   font-size: 24px;
+}
+
+#overlay p{
+  text-align: center;
+  margin: 0;
+  font-size: 2.5vw;
+  line-height: 640px;
+  vertical-align: middle;
+}
+
+#time-display{
+  position: absolute;
+  top: -20px;
+  right: 2px;
+  height: 16px;
+  font-size: 14px;
+  line-height: 16px;
 }

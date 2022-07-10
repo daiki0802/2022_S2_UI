@@ -11,6 +11,11 @@ const MIN_SCALE = 4;
 const SCALE_STEP = 0.1;
 
 /* グローバル変数 */
+// 画面制御
+let timer_flg = 0;
+let timer, timeDisplay, overlay;
+
+// キャンバス関連
 let canvas, context, mini_window, mini_canvas, mini_context, pin_list;
 let img = new Image();
 let mini_img = new Image();
@@ -30,6 +35,9 @@ let is_open = false;
 
 window.onload = () => {
     document.onselectstart = () => false; // 選択を無効化
+    timer = new easytimer.Timer();
+    timeDisplay = document.getElementById("time-display");
+    overlay = document.getElementById("overlay");
 
     canvas = document.getElementById("canvas");
     context = canvas.getContext("2d");
@@ -55,6 +63,121 @@ window.onload = () => {
     }
 }
 
+
+/* キー操作の設定 */
+document.addEventListener("keydown", (e) => {
+    console.log(e.key);
+    switch(e.key){
+        case "Enter":
+            control_timer();
+            return;
+        case "ArrowUp":
+        case "w":
+            move_flg.up = true;
+            return;
+        case "ArrowLeft":
+        case "a":
+            move_flg.left = true;
+            return;
+        case "ArrowDown":
+        case "s":
+            move_flg.down = true;
+            return;
+        case "ArrowRight":
+        case "d":
+            move_flg.right = true;
+            return;
+        case "e":
+            zoom_flg.in = true;
+            return;
+        case "q":
+            zoom_flg.out = true;
+            return;
+        case "Escape":
+            toggle_window(e, false);
+            return;
+        case "z":
+            if(e.ctrlKey) redo(e);
+            return;
+        case "p":
+            print_img();
+            return;
+        default: return;
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    switch(e.key){
+        case "ArrowUp":
+        case "w":
+            move_flg.up = false;
+            return;
+        case "ArrowLeft":
+        case "a":
+            move_flg.left = false;
+            return;
+        case "ArrowDown":
+        case "s":
+            move_flg.down = false;
+            return;
+        case "ArrowRight":
+        case "d":
+            move_flg.right = false;
+            return;
+        case "e":
+            zoom_flg.in = false;
+            zoom_flg.out = false;
+            return;
+        default: return;
+    }
+});
+
+// キーボード操作で変わったフラグに応じて描画
+const watch_keys = () => {
+    // move
+    if(move_flg.up) diff.y = (diff.y >= MAX_MOVE) ? MAX_MOVE : diff.y + MOVE_STEP;
+    if(move_flg.left) diff.x = (diff.x >= MAX_MOVE) ? MAX_MOVE : diff.x + MOVE_STEP;
+    if(move_flg.down) diff.y = (diff.y <= -MAX_MOVE) ? -MAX_MOVE : diff.y - MOVE_STEP;
+    if(move_flg.right) diff.x = (diff.x <= -MAX_MOVE) ? -MAX_MOVE : diff.x - MOVE_STEP;
+
+    // zoom
+    if(zoom_flg.in) scale = (scale >= MAX_SCALE) ? MAX_SCALE : scale + SCALE_STEP;
+    if(zoom_flg.out) scale = (scale <= MIN_SCALE) ? MIN_SCALE : scale - SCALE_STEP;
+
+    mini_draw();
+}
+
+
+/* 画面制御関連 */
+// タイマー制御
+const control_timer = () => {
+    if(timer_flg == 0){
+        overlay.style.display = "none";
+
+        timer.start();
+        timer.addEventListener("secondsUpdated", () => {
+            timeDisplay.innerHTML = timer.getTimeValues().toString(["minutes", "seconds"]);
+        });
+
+        timer_flg = 1;
+    }else if(timer_flg == 1){
+        overlay.style.display = "block";
+        timer.pause();
+
+        timer_flg = 2;
+    }
+}
+
+// 画像を出力
+const print_img = () => {
+    let a = document.createElement('a');
+	a.href = canvas.toDataURL('image/jpeg', 1.0);
+	a.download = 'zoomclick.jpg';
+	a.click();
+}
+
+
+/* キャンバス制御 */
 // canvasの描画
 const draw = () => {
     context.scale(base_scale, base_scale);
@@ -192,84 +315,6 @@ const mini_select_point = (e) => {
     mini_draw();
 }
 
-// キー操作の設定
-document.addEventListener("keydown", (e) => {
-    switch(e.key){
-        case "ArrowUp":
-        case "w":
-            move_flg.up = true;
-            return;
-        case "ArrowLeft":
-        case "a":
-            move_flg.left = true;
-            return;
-        case "ArrowDown":
-        case "s":
-            move_flg.down = true;
-            return;
-        case "ArrowRight":
-        case "d":
-            move_flg.right = true;
-            return;
-        case "e":
-            zoom_flg.in = true;
-            return;
-        case "q":
-            zoom_flg.out = true;
-            return;
-        case "Escape":
-            toggle_window(e, false);
-            return;
-        case "z":
-            if(e.ctrlKey) redo(e);
-            return;
-        case "p":
-            print_img();
-            return;
-        default: return;
-    }
-});
-document.addEventListener("keyup", (e) => {
-    switch(e.key){
-        case "ArrowUp":
-        case "w":
-            move_flg.up = false;
-            return;
-        case "ArrowLeft":
-        case "a":
-            move_flg.left = false;
-            return;
-        case "ArrowDown":
-        case "s":
-            move_flg.down = false;
-            return;
-        case "ArrowRight":
-        case "d":
-            move_flg.right = false;
-            return;
-        case "e":
-            zoom_flg.in = false;
-            zoom_flg.out = false;
-            return;
-        default: return;
-    }
-});
-
-// キーボード操作で変わったフラグに応じて描画
-const watch_keys = () => {
-    // move
-    if(move_flg.up) diff.y = (diff.y >= MAX_MOVE) ? MAX_MOVE : diff.y + MOVE_STEP;
-    if(move_flg.left) diff.x = (diff.x >= MAX_MOVE) ? MAX_MOVE : diff.x + MOVE_STEP;
-    if(move_flg.down) diff.y = (diff.y <= -MAX_MOVE) ? -MAX_MOVE : diff.y - MOVE_STEP;
-    if(move_flg.right) diff.x = (diff.x <= -MAX_MOVE) ? -MAX_MOVE : diff.x - MOVE_STEP;
-
-    // zoom
-    if(zoom_flg.in) scale = (scale >= MAX_SCALE) ? MAX_SCALE : scale + SCALE_STEP;
-    if(zoom_flg.out) scale = (scale <= MIN_SCALE) ? MIN_SCALE : scale - SCALE_STEP;
-
-    mini_draw();
-}
-
 // 点を消す
 const redo = (e) => {
     e.preventDefault();
@@ -277,12 +322,4 @@ const redo = (e) => {
         dots.pop();
         draw();
     }
-}
-
-// 画像を出力
-const print_img = () => {
-    let a = document.createElement('a');
-	a.href = canvas.toDataURL('image/jpeg', 1.0);
-	a.download = 'zoomclick.jpg';
-	a.click();
 }

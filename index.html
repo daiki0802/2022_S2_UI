@@ -23,7 +23,7 @@
                 <ol>
                     <li>拡大したい場所を右クリックすると、小さなウィンドウが開きます</li>
                     <li>ウィンドウ内で左クリックすることで、ピクセルを選択できます。1つのウィンドウ内では1個のピクセルだけ選べます。</li>
-                    <li>開いたウィンドウの位置は、次のようにして調整できます。</li>
+                    <li>開いたウィンドウの位置は、以下のキー操作で調整できます。</li>
                     <img src="keyctrl.png"> <!-- http://www.sharots.com/sozai/keyboard.html -->
                     <li>既にウィンドウが開かれた状態でも、右クリックで次のウィンドウを開くことができます。</li>
                 </ol>
@@ -40,9 +40,15 @@
             <div id="pin_list"></div>
 
             <!-- 計測開始前のオーバーレイ -->
-            <!-- <div class="uk-overlay-primary uk-position-cover"></div> -->
+            <div id="overlay" class="uk-overlay-primary uk-position-cover">
+                <p>Enterキーを押してスタート</p>
+            </div>
+
+            <!-- タイマー -->
+            <div id="time-display">00:00</div>
         </div>
     </div>
+    <script src="easytimer.min.js"></script> <!-- http://albert-gonzalez.github.io/easytimer.js/ -->
     <script src="script.js"></script>
 </body>
 </html>
