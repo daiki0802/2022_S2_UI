@@ -1,21 +1,95 @@
-#container{
+*{
+  font-family: "Noto Sans JP", sans-serif !important;
+}
+
+main{
   position: relative;
-  width: 97.5vw;
+  width: 92.5vw;
+  height: 100vh;
   margin: 0 auto;
-  font-family: "Noto Sans JP", sans-serif;
+
+  display: grid;
+  column-gap: 20px;
+  grid-template-columns: 1fr 960px;
+  align-items: center;
+}
+
+#guide{
+  height: 640px;
+}
+
+#guide #guide-header{
+  padding: 0;
+  text-align: center;
+}
+
+#guide #guide-header h1{
+  font-size: 2vw;
+  line-height: 2;
+}
+
+#guide #guide-body{
+  height: calc(640px - 2vw * 2);
+  overflow-y: scroll;
+  padding: 15px 25px;
+  box-sizing: border-box;
+}
+
+#guide #guide-body::-webkit-scrollbar{
+  width: 4px;
+  background: transparent;
+}
+
+#guide #guide-body::-webkit-scrollbar-corner,
+#guide #guide-body::-webkit-scrollbar-thumb,
+#guide #guide-body::-webkit-scrollbar-track {
+  border-radius: 4px;
+}
+#guide #guide-body::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+}
+
+#guide #guide-body h2{
+  font-size: 1.25vw;
+  line-height: 1;
+  margin: 30px 0 10px 0;
+}
+
+#guide #guide-body h2:first-of-type{
+  margin-top: 10px;
+}
+
+#guide #guide-body ol{
+  margin: 0;
+  padding-left: 15px;
+}
+
+#guide #guide-body ol li{
+  margin-bottom: 10px;
+}
+
+#guide #guide-body ol img{
+  display: block;
+  margin: 10px auto;
+  width: 80%;
+}
+
+#guide #guide-body p{
+  margin: 0;
+  margin-bottom: 20px;
 }
 
 #canvas_wrapper{
   position: relative;
   width: 960px;
   height: 640px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 
 #canvas{
   width: 100%;
   height: 100%;
-  margin-left: calc((100% - 900px) / 2);
+  /* margin-left: calc((100% - 900px) / 2); */
 }
 
 #mini-window{

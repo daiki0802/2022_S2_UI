@@ -1,25 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="utf-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.14.3/dist/css/uikit.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.14.3/dist/js/uikit.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="container">
-        <h1>UI kadai: mini-window</h1>
+    <main>
+        <div id="guide" class="uk-card uk-card-default">
+            <div id="guide-header" class="uk-card-header">
+                <h1 class="uk-card-title">mini-window</h1>
+            </div>
+            <div id="guide-body" class="uk-card-body">
+                <h2>概要</h2>
+                <p>右の画像の黒丸の中には、それぞれ1つだけ白いピクセルがあります。10個全ての黒丸に対して、白いピクセルを選択する操作をしてください。</p>
+                <h2>使い方</h2>
+                <ol>
+                    <li>拡大したい場所を右クリックすると、小さなウィンドウが開きます</li>
+                    <li>ウィンドウ内で左クリックすることで、ピクセルを選択できます。1つのウィンドウ内では1個のピクセルだけ選べます。</li>
+                    <li>開いたウィンドウの位置は、次のようにして調整できます。</li>
+                    <img src="keyctrl.png"> <!-- http://www.sharots.com/sozai/keyboard.html -->
+                    <li>既にウィンドウが開かれた状態でも、右クリックで次のウィンドウを開くことができます。</li>
+                </ol>
+            </div>
+        </div>
         <div id="canvas_wrapper">
+            <!-- キャンバス本体 -->
             <canvas id="canvas" width="1920" height="1280"></canvas>
+
+            <!-- mini-window用 -->
             <div id="mini-window">
                 <canvas id="mini-canvas" width="450" height="300"></canvas>
             </div>
             <div id="pin_list"></div>
+
+            <!-- 計測開始前のオーバーレイ -->
+            <div class="uk-overlay-primary uk-position-cover"></div>
         </div>
     </div>
-    <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
     <script src="script.js"></script>
 </body>
 </html>
